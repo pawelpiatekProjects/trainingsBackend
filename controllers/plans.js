@@ -35,6 +35,7 @@ exports.createPlan = (req, res, next) => {
 }
 
 exports.getPlans = (req, res, next) => {
+    console.log('user id', req.userId)
     Plan.find({creator: req.userId.toString()}).then(plans => {
         res.status(200).json({
             plans: plans
