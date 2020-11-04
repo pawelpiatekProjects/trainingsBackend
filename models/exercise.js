@@ -1,30 +1,30 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const planSchema = new Schema(
-    {
+const exerciseSchema = new Schema({
+        exerciseNumber: {
+            type: String,
+            required: true
+        },
         name: {
             type: String,
             required: true
         },
-        days: {
-            type: Number,
+        series: {
+            type: String,
             required: true
         },
-        trainingDays: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'TrainingDays',
-                required: false
-            }
-        ],
-        priority: {
+        reps: {
             type: String,
+            required: true
+        },
+        rate: {
+            type: Number,
             required: false
         },
-        image: {
+        ytLink: {
             type: String,
-            required: true
+            required: false
         },
         description: {
             type: String,
@@ -36,7 +36,9 @@ const planSchema = new Schema(
             required: true
         }
     },
-    {timestamps: true}
+    {
+        timestamps: true
+    }
 );
 
-module.exports = mongoose.model('Plan', planSchema);
+module.exports = mongoose.model('Exercise', exerciseSchema);

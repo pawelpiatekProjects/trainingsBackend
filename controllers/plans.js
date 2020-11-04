@@ -8,6 +8,7 @@ exports.createPlan = (req, res, next) => {
    const plan = new Plan({
        name: body.name,
        days: body.days,
+       trainingDays: [],
        priority: body.priority,
        image: body.image,
        description: body.description,
