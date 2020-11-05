@@ -45,5 +45,9 @@ exports.getPlans = (req, res, next) => {
 }
 
 exports.getPlan = (req, res, next) => {
-
+    Plan.findById(req.params.id).then(plan => {
+        res.status(200).json({
+            plan: plan
+        })
+    }).catch(err => console.log(err))
 }
