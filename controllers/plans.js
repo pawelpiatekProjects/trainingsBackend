@@ -1,5 +1,6 @@
 const Plan = require('../models/plan');
 const User = require('../models/user');
+const TrainingDay = require('../models/trainingDay');
 
 exports.createPlan = (req, res, next) => {
    const body = req.body;
@@ -48,6 +49,38 @@ exports.getPlan = (req, res, next) => {
     Plan.findById(req.params.id).then(plan => {
         res.status(200).json({
             plan: plan
+        })
+    }).catch(err => console.log(err))
+}
+
+exports.createTrainingDay = (req, res, next) => {
+    const body = req.body;
+    console.log(body);
+    let sourcePlan;
+    const trainingDay = new TrainingDay({
+        name: body.name,
+        trainings: [],
+        creator: body.userId,
+        plan: body.planId
+    });
+    trainingDay.save().then(() => {
+        return Plan.findById(planId);
+    }).then(plan => {
+        sourcePlan = plan;
+        plan.trainingDays.push(trainingDay);
+        return plan.save()
+    }).then(result => {
+        res.status(200).json({
+            message: 'Created training day'
+        })
+    }).catch(err => console.log(err))
+}
+
+exports.getTrainingDays = (req, res, next) => {
+    console.log('req', req);
+    TrainingDay.find({plan: req.params.id.toString()}).then(trainingDays => {
+        res.status(200).json({
+            trainingDays: trainingDays
         })
     }).catch(err => console.log(err))
 }

@@ -17,6 +17,11 @@ const trainingDaySchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: true
+        },
+        plan: {
+            type: Schema.Types.ObjectId,
+            ref: 'Plan',
+            required: true
         }
     },
     {
