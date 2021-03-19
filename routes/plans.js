@@ -17,9 +17,17 @@ const router = express.Router();
 
 // router.get('/training-days/:id', isAuth, plansController.getTrainingDays)
 
+
+
 // new approach
 
 router.post('/addPlan', isAuth, plansController.createTrainingPlan);
+
+router.post('/addTrainingDay', isAuth, plansController.addTrainingDay);
+
+router.get('/all', isAuth, plansController.getAllTrainingPlans);
+
+
 
 
 

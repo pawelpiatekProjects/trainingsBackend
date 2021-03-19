@@ -122,3 +122,49 @@ exports.createTrainingPlan = (req, res, next) => {
 
 
 }
+
+exports.getAllTrainingPlans = (req, res, next) => {
+    TrainingPlan.find({ creator: req.userId.toString() }).then(plans => {
+        res.status(200).json({
+            plans: plans
+        })
+    }).catch(err => console.log(err));
+}
+
+exports.getPlan = (req, res, next) => {
+    Plan.findById(req.params.id).then(plan => {
+        res.status(200).json({
+            plan: plan
+        })
+    }).catch(err => console.log(err))
+}
+
+exports.addTrainingDay = (req, res, next) => {
+    const { name, userId, planId } = req.body;
+    let creator;
+    let newPlan;
+    console.log('planId: ', planId)
+    TrainingPlan.findById(planId).then(plan => {
+        const trainingDay = {
+            trainingDayName: name,
+            exercises: []
+        }
+        console.log(plan)
+        plan.trainingDays.push(trainingDay);
+        newPlan = plan;
+        return plan.save();
+    }).then(() => {
+        return User.findById(userId);
+    }).then(user => {
+        creator = user;
+        return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
+            user.plans = plans;
+            return user.save();
+        })
+    }).then(result => {
+        res.status(200).json({
+            plan: newPlan
+        })
+    }).catch(err => console.log(err))
+
+}
