@@ -55,9 +55,10 @@ app.use((error,req,res,next)=>{
   res.status(status).json({message:message, data:data});
 })
 
+// TODO: move key to .env
 mongoose
     .connect(
-        process.env.MONGO_KEY
+      'mongodb+srv://admin:17071998@cluster0.dvzkc.mongodb.net/trainings?retryWrites=true&w=majority'
     )
     .then(result => {
       app.listen(8080);
