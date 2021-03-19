@@ -25,6 +25,8 @@ router.post('/addPlan', isAuth, plansController.createTrainingPlan);
 
 router.post('/addTrainingDay', isAuth, plansController.addTrainingDay);
 
+router.post('/addTrainingExercise', isAuth, plansController.addTrainingDayExercise);
+
 router.get('/all', isAuth, plansController.getAllTrainingPlans);
 
 

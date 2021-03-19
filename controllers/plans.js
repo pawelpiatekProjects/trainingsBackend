@@ -168,3 +168,44 @@ exports.addTrainingDay = (req, res, next) => {
     }).catch(err => console.log(err))
 
 }
+
+exports.addTrainingDayExercise = (req, res, next) => {
+    const { userId, planId, dayId, name, series, weight, pauseTime, rate, ytLink, description } = req.body;
+    let creator;
+    let newPlan;
+
+    TrainingPlan.findById(planId).then(plan => {
+        const exercise = {
+            exerciseName: name,
+            repsInSeries: series,
+            weight: weight,
+            pause: pauseTime,
+            rate: rate,
+            ytLink: ytLink,
+            exerciseDescription: description
+        };
+        console.log('plan: ', plan.trainingDays)
+        const trainingDay = plan.trainingDays.filter(day => {
+            console.log(dayId === day._id)
+           
+           return  day._id.toString() == dayId.toString()
+        }
+        )[0];
+        console.log('trainingDay: ', trainingDay)
+        trainingDay.exercises.push(exercise);
+        newPlan = plan;
+        return plan.save()
+    }).then(() => {
+        return User.findById(userId);
+    }).then(user => {
+        creator = user;
+        return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
+            user.plans = plans;
+            return user.save();
+        })
+    }).then(result => {
+        res.status(200).json({
+            plan: newPlan
+        })
+    }).catch(err => console.log(err))
+}
