@@ -33,12 +33,15 @@ const trainingPlanSchema = new Schema(
                             type: String,
                             required: true
                         },
-                        repsInSeries: [Number],
+                        repsInSeries: {
+                            type:  [Number],
+                            required: true
+                        },
                         weight: {
                             type: Number,
                             required: false
                         },
-                        break: {
+                        pause: {
                             type: Number,
                             required: false
                         },

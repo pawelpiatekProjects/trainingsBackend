@@ -2,6 +2,7 @@ const {validationResult} = require('express-validator/check');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const user = require('../models/user');
 
 exports.signup = (req, res, next) => {
     const errors = validationResult(req);
@@ -14,6 +15,7 @@ exports.signup = (req, res, next) => {
     const email = req.body.email;
     const name = req.body.name;
     const lastName = req.body.lastName;
+    const userName = req.body.userName;
     const password = req.body.password;
     bcrypt
         .hash(password, 12)
@@ -22,7 +24,8 @@ exports.signup = (req, res, next) => {
                 email: email,
                 password: hashedPw,
                 name: name,
-                lastName: lastName
+                lastName: lastName,
+                userName: userName
             });
             return user.save()
         })

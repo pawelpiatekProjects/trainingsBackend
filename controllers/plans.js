@@ -34,6 +34,9 @@ exports.createTrainingPlan = (req, res, next) => {
             }
         })
     }).catch(err => {
+        res.status(400).json({
+            message: err
+        })
         console.log('Error', err);
     })
 
@@ -49,7 +52,8 @@ exports.getAllTrainingPlans = (req, res, next) => {
                 description: plan.description,
                 creator: plan.creator,
                 image: plan.image,
-                trainingDaysNum: plan.trainingDays.length
+                trainingDaysNum: plan.trainingDays.length,
+                createdAt: plan.createdAt
             }
         })
         res.status(200).json({
@@ -59,7 +63,8 @@ exports.getAllTrainingPlans = (req, res, next) => {
 }
 
 exports.getPlan = (req, res, next) => {
-    Plan.findById(req.params.id).then(plan => {
+    console.log('id: ', req.params.id)
+    TrainingPlan.findById(req.params.id).then(plan => {
         res.status(200).json({
             plan: plan
         })
@@ -100,7 +105,7 @@ exports.addTrainingDayExercise = (req, res, next) => {
     const { userId, planId, dayId, name, series, weight, pauseTime, rate, ytLink, description } = req.body;
     let creator;
     let newPlan;
-
+    console.log('pause time ', pauseTime);
     TrainingPlan.findById(planId).then(plan => {
         const exercise = {
             exerciseName: name,
@@ -127,5 +132,10 @@ exports.addTrainingDayExercise = (req, res, next) => {
         res.status(200).json({
             plan: newPlan
         })
-    }).catch(err => console.log(err))
+    }).catch(err => {
+        console.log(err)
+        res.status(400).json({
+            message: err
+        })
+    })
 }
