@@ -23,6 +23,8 @@ router.get('/all', isAuth, plansController.getAllTrainingPlans);
 
 router.get('/all/:id', isAuth, plansController.getPlan);
 
+router.delete('/deleteExercise', isAuth, plansController.deleteTrainingDayExercise);
+
 
 
 

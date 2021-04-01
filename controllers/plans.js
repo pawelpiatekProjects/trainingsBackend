@@ -139,3 +139,34 @@ exports.addTrainingDayExercise = (req, res, next) => {
         })
     })
 }
+
+exports.deleteTrainingDayExercise = (req, res, next) => {
+    const {userId, planId, dayId, exerciseId} = req.query;
+    console.log(`userId: ${userId}, planId: ${planId}, dayID: ${dayId}, exerciseId: ${exerciseId}`);
+    // console.log('request: ', req)
+
+    let creator;
+    let newPlan;
+
+    TrainingPlan.findById(planId).then(plan => {
+        const trainingDay = plan.trainingDays.filter(day => day._id.toString() == dayId.toString())[0];
+        trainingDay.exercises = trainingDay.exercises.filter(exercise => exercise._id.toString() != exerciseId.toString());
+        return plan.save();
+    }).then(user => {
+        creator = user;
+        return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
+            user.plans = plans;
+            return user.save();
+        })
+    }).then(result => {
+        res.status(200).json({
+            message: 'Deleted exercise',
+            plan: newPlan
+        })
+    }).catch(err => {
+        console.log(err)
+        res.status(400).json({
+            message: err
+        })
+    })
+}
