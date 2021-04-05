@@ -198,6 +198,8 @@ exports.deleteTrainingDayExercise = (req, res, next) => {
         const trainingDay = plan.trainingDays.filter(day => day._id.toString() == dayId.toString())[0];
         trainingDay.exercises = trainingDay.exercises.filter(exercise => exercise._id.toString() != exerciseId.toString());
         return plan.save();
+    }).then(() => {
+        return User.findById(userId);
     }).then(user => {
         creator = user;
         return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
@@ -208,6 +210,59 @@ exports.deleteTrainingDayExercise = (req, res, next) => {
         res.status(200).json({
             message: 'Deleted exercise',
             plan: newPlan
+        })
+    }).catch(err => {
+        console.log(err)
+        res.status(400).json({
+            message: err
+        })
+    })
+}
+
+exports.editTrainingDayExercise = (req, res, next) => {
+    const {userId, planId, dayId, exerciseId, name, series, weight, pauseTime, rate, ytLink, description } = req.body.params;
+    let creator;
+
+    TrainingPlan.findById(planId).then(plan => {
+        
+        
+        const newExercise = {
+            exerciseName: name,
+            repsInSeries: series,
+            weight: weight,
+            pause: pauseTime,
+            rate: rate,
+            ytLink: ytLink,
+            exerciseDescription: description
+        };
+
+        const trainingDay = plan.trainingDays.filter(day => day._id.toString() == dayId.toString())[0];
+        const exercise = trainingDay.exercises.filter(exercise => exercise._id == exerciseId)[0];
+        console.log('exercise: ', exercise);
+        
+        exercise.exerciseName = name;
+        exercise.repsInSeries = series;
+        exercise.weight = weight;
+        exercise.pause = pauseTime;
+        exercise.rate = rate;
+        exercise.ytLink = ytLink;
+        exercise.exerciseDescription = description;
+
+        // trainingDay.exercises = trainingDay.exercises.splice(exerciseIndex, 1, newExercise);
+
+        return plan.save()
+
+    }).then(() => {
+        return User.findById(userId);
+    }).then(user => {
+        creator = user;
+        return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
+            user.plans = plans;
+            return user.save();
+        })
+    }).then(result => {
+        res.status(200).json({
+            message: 'Edited exercise',
         })
     }).catch(err => {
         console.log(err)
