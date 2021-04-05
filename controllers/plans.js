@@ -129,6 +129,8 @@ exports.deleteTrainingDay = (req, res, next) => {
     TrainingPlan.findById(planId).then(plan => {
         plan.trainingDays = plan.trainingDays.filter(day => day._id.toString() != dayId.toString());
         return plan.save();
+    }).then(() => {
+        return User.findById(userId);
     }).then(user => {
         creator = user;
         return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
@@ -138,6 +140,34 @@ exports.deleteTrainingDay = (req, res, next) => {
     }).then(result => {
         res.status(200).json({
             message: 'Deleted training day',
+        })
+    }).catch(err => {
+        console.log(err)
+        res.status(400).json({
+            message: err
+        })
+    })
+}
+
+exports.editTrainingDay = (req, res, next) => {
+    const { name, userId, planId, dayId } = req.body.params;
+
+    TrainingPlan.findById(planId).then(plan => {
+        const trainingDay = plan.trainingDays.filter(day => day._id.toString() == dayId.toString())[0];
+        trainingDay.trainingDayName = name;
+
+        return plan.save();
+    }).then(() => {
+        return User.findById(userId);
+    }).then(user => {
+        creator = user;
+        return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
+            user.plans = plans;
+            return user.save();
+        })
+    }).then(result => {
+        res.status(200).json({
+            message: 'Edited training day',
         })
     }).catch(err => {
         console.log(err)
