@@ -101,6 +101,30 @@ exports.addTrainingDay = (req, res, next) => {
 
 }
 
+exports.deleteTrainingDay = (req, res, next) => {
+    const {userId, planId, dayId} = req.query;
+
+    TrainingPlan.findById(planId).then(plan => {
+        plan.trainingDays = plan.trainingDays.filter(day => day._id.toString() != dayId.toString());
+        return plan.save();
+    }).then(user => {
+        creator = user;
+        return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
+            user.plans = plans;
+            return user.save();
+        })
+    }).then(result => {
+        res.status(200).json({
+            message: 'Deleted training day',
+        })
+    }).catch(err => {
+        console.log(err)
+        res.status(400).json({
+            message: err
+        })
+    })
+}
+
 exports.addTrainingDayExercise = (req, res, next) => {
     const { userId, planId, dayId, name, series, weight, pauseTime, rate, ytLink, description } = req.body;
     let creator;
