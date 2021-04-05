@@ -40,7 +40,29 @@ exports.createTrainingPlan = (req, res, next) => {
         console.log('Error', err);
     })
 
+}
 
+exports.deleteTrainingPlan = (req, res, next) => {
+    const {userId, planId } = req.query;
+    TrainingPlan.deleteOne({_id: planId}).then(() => {
+        const user = User.findById(userId);
+        return user;
+    }).then(user => {
+        return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
+            user.plans = plans;
+            return user.save();
+        })
+         
+    }).then(result => {
+        res.json({
+            message: 'Deleted training plan'
+        })
+    }).catch(err => {
+        console.log(err)
+        res.status(400).json({
+            message: err
+        })
+    })
 }
 
 exports.getAllTrainingPlans = (req, res, next) => {
