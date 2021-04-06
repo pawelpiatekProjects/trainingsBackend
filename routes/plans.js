@@ -23,6 +23,8 @@ router.put('/editExercise', isAuth, plansController.editTrainingDayExercise);
 
 router.put('/editTrainingDay', isAuth, plansController.editTrainingDay);
 
+router.put('/editTrainingPlan', isAuth, plansController.editTrainingPlan);
+
 router.get('/all', isAuth, plansController.getAllTrainingPlans);
 
 router.get('/all/:id', isAuth, plansController.getPlan);

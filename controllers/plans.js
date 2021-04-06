@@ -2,7 +2,7 @@ const Plan = require('../models/plan');
 const User = require('../models/user');
 const TrainingDay = require('../models/trainingDay');
 const TrainingPlan = require('../models/trainingPlan');
-const user = require('../models/user');
+
 
 // New approach
 
@@ -56,6 +56,36 @@ exports.deleteTrainingPlan = (req, res, next) => {
     }).then(result => {
         res.json({
             message: 'Deleted training plan'
+        })
+    }).catch(err => {
+        console.log(err)
+        res.status(400).json({
+            message: err
+        })
+    })
+}
+
+exports.editTrainingPlan = (req, res, next) => {
+    const {userId, planId, name, description, image } = req.body.params;
+    let creator;
+    // TrainingPlan.findById(planId).then(plan => {
+    //     plan.name = name;
+    //     plan.description = description;
+    //     plan.image = image;
+    //     return plan.save();
+    TrainingPlan.findOneAndUpdate({_id: planId}, {trainingPlanName: name, description: description, image: image}, {new: true})
+    .then(plans=> {
+        console.log('plans after update: ', plans)
+        return User.findById(userId);
+    }).then(user => {
+        creator = user;
+        return TrainingPlan.find({ creator: userId.toString() }).then(plans => {
+            user.plans = plans;
+            return user.save();
+        })
+    }).then(result => {
+        res.status(200).json({
+            message: 'Edited training plan',
         })
     }).catch(err => {
         console.log(err)
