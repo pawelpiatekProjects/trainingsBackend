@@ -211,11 +211,13 @@ exports.addTrainingDayExercise = (req, res, next) => {
     const { userId, planId, dayId, name, series, weight, pauseTime, rate, ytLink, description } = req.body;
     let creator;
     let newPlan;
-    console.log('pause time ', pauseTime);
+    
+    const seriesArr = series.split(',').map(reps => parseInt(reps));
+    console.log('series', seriesArr);
     TrainingPlan.findById(planId).then(plan => {
         const exercise = {
             exerciseName: name,
-            repsInSeries: series,
+            repsInSeries: seriesArr,
             weight: weight,
             pause: pauseTime,
             rate: rate,
@@ -285,23 +287,16 @@ exports.editTrainingDayExercise = (req, res, next) => {
 
     TrainingPlan.findById(planId).then(plan => {
         
-        
-        const newExercise = {
-            exerciseName: name,
-            repsInSeries: series,
-            weight: weight,
-            pause: pauseTime,
-            rate: rate,
-            ytLink: ytLink,
-            exerciseDescription: description
-        };
+        const seriesArr = series.split(',').map(reps => parseInt(reps));
+    
+  
 
         const trainingDay = plan.trainingDays.filter(day => day._id.toString() == dayId.toString())[0];
         const exercise = trainingDay.exercises.filter(exercise => exercise._id == exerciseId)[0];
         console.log('exercise: ', exercise);
         
         exercise.exerciseName = name;
-        exercise.repsInSeries = series;
+        exercise.repsInSeries = seriesArr;
         exercise.weight = weight;
         exercise.pause = pauseTime;
         exercise.rate = rate;
