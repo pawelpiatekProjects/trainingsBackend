@@ -9,6 +9,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const plansRouter = require('./routes/plans');
 const authRouter = require('./routes/auth');
+const trainingsRouter = require('./routes/trainings');
 const mongoConnect = require('./util/databse');
 
 const app = express();
@@ -42,7 +43,7 @@ app.use(cors())
 //Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/trainings', trainingsRouter);
 app.use('/plans',plansRouter);
 app.use('/auth', authRouter);
 
