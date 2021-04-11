@@ -216,9 +216,9 @@ exports.addTrainingDayExercise = (req, res, next) => {
         const exercise = {
             exerciseName: name,
             repsInSeries: seriesArr,
-            weight: weight,
-            pause: pauseTime,
-            rate: rate,
+            weight: weight ,
+            pause: pauseTime ,
+            rate: rate ,
             ytLink: ytLink,
             exerciseDescription: description
         };

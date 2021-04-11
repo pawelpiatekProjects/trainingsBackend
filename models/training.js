@@ -28,7 +28,7 @@ const trainingSchema = new Schema(
             type: String,
             required: true
         },
-        exercisesToDo: [
+        exercises: [
             {
                 _id: {
                     type: String,
@@ -36,6 +36,10 @@ const trainingSchema = new Schema(
                 },
                 exerciseName: {
                     type: String,
+                    required: true
+                },
+                isFinished: {
+                    type: Boolean,
                     required: true
                 },
                 series: [
@@ -56,6 +60,10 @@ const trainingSchema = new Schema(
                             type: Number,
                             required: true
                         },
+                        isFinished: {
+                            type: Boolean,
+                            required: true
+                        }
                     }
                 ]
             }
