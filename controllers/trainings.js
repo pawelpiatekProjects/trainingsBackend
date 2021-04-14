@@ -2,6 +2,40 @@ const User = require('../models/user');
 const Training = require('../models/training');
 const TrainingPlan = require('../models/trainingPlan');
 
+exports.fetchTrainings = async(req, res, next) => {
+    const userId = req.userId;
+
+    Training.find({creator: userId}).then(trainings => {
+        const trainingsData = trainings.map(training => {
+            return {
+                _id: training._id,
+                creator: training.creator,
+                date: training.date,
+                length: training.length,
+                planName: training.planName,
+                dayName: training.dayName
+            }
+        });
+        res.status(200).json({
+            trainings: trainingsData
+        })
+    }).catch(err => {
+        console.log('trainings error: ', err)
+    });
+
+
+}
+
+exports.fetchTraining = async(req, res, next) => {
+    const {id} = req.params;
+
+    Training.findById(id).then(training => {
+        res.status(200).json({
+            training: training
+        })
+    }).catch(err => console.log(err))
+}
+
 exports.startNewTraining = async(req, res, next) => {
 
     const {userId, planId, dayId} = req.body;
@@ -39,16 +73,11 @@ exports.startNewTraining = async(req, res, next) => {
         isFinished: false,
         planName: trainingPlan.trainingPlanName,
         dayName: trainingDay.trainingDayName,
-        exercises: exercises,
-        finishedExercises: []
+        exercises: exercises
     });
 
-    training.save().then(() => {
-        return User.findById(userId);
-    }).then(user => {
-        user.trainings.push(training);
-        return user.save();
-    }).then(result => {
+    training.save()
+    .then(result => {
         res.status(201).json({
             message: 'Started training',
             training: training
@@ -75,6 +104,17 @@ exports.completeSeries = async(req, res, next) => {
     series.pause = pause;
     series.rate = rate;
 
+    const notFinishedSeries = exercise.series.filter(series => !series.isFinished).length;
+
+
+    if(notFinishedSeries === 0) {
+        exercise.isFinished = true;
+    }
+
+
+
+    console.log('not finished series: ', notFinishedSeries);
+
     training.save().then(result => {
         res.status(201).json({
             message: 'Completed serie',
@@ -86,4 +126,31 @@ exports.completeSeries = async(req, res, next) => {
         })
         console.log('Error', err);
     })
+}
+
+exports.completeTraining = async(req, res , next) => {
+
+    const {trainingId, userId} = req.body;
+
+    const training = await Training.findById(trainingId);
+
+    training.isFinished = true;
+
+    training.save().then(() => {
+        return User.findById(userId);
+    }).then(user => {
+        user.trainings.push(training);
+        return user.save();
+    }).then(result => {
+        res.status(201).json({
+            message: 'Finished training',
+            training: training
+        })
+    }).catch(err => {
+        res.status(400).json({
+            message: err
+        })
+        console.log('Error', err);
+    })
+    
 }

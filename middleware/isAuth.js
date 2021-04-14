@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     try {
         decodedToken = jwt.verify(token, 'somesupersecretstringformykey');
     } catch (e) {
-        e.statusCode = 500;
+        e.statusCode = 401;
         throw e;
     }
     if (!decodedToken) {

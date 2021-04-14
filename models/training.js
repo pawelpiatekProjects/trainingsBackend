@@ -67,38 +67,6 @@ const trainingSchema = new Schema(
                     }
                 ]
             }
-        ],
-        finishedExercises: [
-            {
-                _id: {
-                    type: String,
-                    required: true
-                },
-                exerciseName: {
-                    type: String,
-                    required: true
-                },
-                series: [
-                    {
-                        reps: {
-                            type: Number,
-                            required: true
-                        },
-                        weight: {
-                            type: Number,
-                            required: true
-                        },
-                        pause: {
-                            type: Number,
-                            required: true
-                        },
-                        rate: {
-                            type: Number,
-                            required: true
-                        },
-                    }
-                ]
-            }
         ]
     },
     {timestamps: true}
