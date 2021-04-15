@@ -2,7 +2,6 @@ const { validationResult } = require('express-validator/check');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const user = require('../models/user');
 
 exports.signup = (req, res, next) => {
     const errors = validationResult(req);
@@ -44,6 +43,7 @@ exports.signup = (req, res, next) => {
             }
             next(err);
         })
+
 };
 
 exports.login = (req, res, next) => {
@@ -71,7 +71,7 @@ exports.login = (req, res, next) => {
                 email: loadedUser.email,
                 userId: loadedUser._id.toString()
             }, 'somesupersecretstringformykey',
-                { expiresIn: '15s' }
+                { expiresIn: '1h' }
             );
             const refreshToken = jwt.sign({
                 email: loadedUser.email,
@@ -120,7 +120,7 @@ exports.refreshToken = (req, res, next) => {
                 email: user.email,
                 userId: user.userId
             },'somesupersecretstringformykey', 
-                {expiresIn: '15s'}
+                {expiresIn: '1h'}
             );
 
             const refreshToken = jwt.sign({
@@ -135,8 +135,6 @@ exports.refreshToken = (req, res, next) => {
                 userId: user.userId
             }
             
-            
-
         });
         user.refreshToken = responseData.refreshToken;
         user.save();
