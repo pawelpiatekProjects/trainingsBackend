@@ -13,6 +13,8 @@ router.post('/completeTraining', isAuth, trainingsController.completeTraining);
 
 router.post('/finishPreviousTraining', isAuth, trainingsController.finishPreviousTraining);
 
+router.post('/fetchNotFinished', isAuth, trainingsController.fetchNotFinishedTraining);
+
 router.get('/all', isAuth, trainingsController.fetchTrainings);
 
 router.get('/all/:id', isAuth, trainingsController.fetchTraining);

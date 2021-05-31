@@ -13,14 +13,17 @@ exports.fetchTrainings = async (req, res, next) => {
                 date: training.date,
                 length: training.length,
                 planName: training.planName,
-                dayName: training.dayName
+                dayName: training.dayName,
+                isFinished: training.isFinished
             }
         });
         res.status(200).json({
             trainings: trainingsData
         })
     }).catch(err => {
-        console.log('trainings error: ', err)
+        const error = new Error('Could not fetch plans');
+        error.status(500);
+        throw error;
     });
 
 
@@ -47,14 +50,42 @@ exports.checkTrainings = async (req, res, next) => {
 
     const notFinishedTraining = userTrainings.filter(training => !training.isFinished);
 
+    let previousTraining;
+
+    if(notFinishedTraining.length === 0) {
+        previousTraining = {}
+    } else {
+        previousTraining = notFinishedTraining[0];
+    }
+
     console.log('user trainings: ', userTrainings);
 
     console.log('not finished trainings: ', notFinishedTraining)
 
     res.status(201).json({
-        isPreviousTrainingFinished: notFinishedTraining.length === 0
+        prevoiusTraining: previousTraining
     })
 
+}
+
+exports.fetchNotFinishedTraining = async (req, res, next) => {
+    const { userId } = req.body;
+
+    if(!userId) {
+        res.status(403);
+    }
+
+    const userTrainings = await Training.find({ creator: userId });
+
+    const notFinishedTraining = userTrainings.filter(training => !training.isFinished)[0];
+
+    if(notFinishedTraining) {
+        res.status(200).json({
+            training: notFinishedTraining
+        })
+    } else {
+        res.status(500);
+    }
 }
 
 exports.finishPreviousTraining = async (req, res, next) => {
@@ -84,9 +115,6 @@ exports.startNewTraining = async (req, res, next) => {
 
     const trainingDay = trainingPlan.trainingDays.filter(day => day._id.toString() == dayId.toString())[0];
 
-
-
-
     const exercises = trainingDay.exercises.map(exercise => {
 
         const series = exercise.repsInSeries.map(reps => {
@@ -106,7 +134,6 @@ exports.startNewTraining = async (req, res, next) => {
             series: series
         }
     });
-
 
     const training = new Training({
         creator: userId,
@@ -183,10 +210,12 @@ exports.completeTraining = async (req, res, next) => {
     }).then(user => {
         user.trainings.push(training);
         return user.save();
-    }).then(result => {
+    }).then(async result => {
+
+        const trainings = await Training.find({creator: userId});
         res.status(201).json({
             message: 'Finished training',
-            training: training
+            trainings: trainings
         })
     }).catch(err => {
         res.status(400).json({

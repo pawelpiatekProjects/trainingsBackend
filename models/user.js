@@ -38,6 +38,17 @@ const userSchema = new Schema({
             ref:'Trainings'
         }
     ],
+    personalRecords: {
+        squat: {
+            type: Number
+        },
+        benchPress: {
+            type: Number
+        },
+        deadlift: {
+            type: Number
+        }
+    },
     refreshToken: {
         type: String
     }

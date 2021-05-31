@@ -6,9 +6,9 @@ const User = require('../models/user');
 exports.signup = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        const error = new Error('Validation failed');
+        const error = new Error('Could not create account');
         error.statusCode = 422;
-        error.data = errors.array();
+        error.data = errors.array()[0].message;
         throw error;
     }
     const email = req.body.email;
@@ -25,7 +25,12 @@ exports.signup = (req, res, next) => {
                 name: name,
                 lastName: lastName,
                 userName: userName,
-                refreshToken: ''
+                refreshToken: '',
+                personalRecords: {
+                    squat: 0,
+                    benchPress: 0,
+                    deadlift: 0
+                }
             });
             return user.save()
         })

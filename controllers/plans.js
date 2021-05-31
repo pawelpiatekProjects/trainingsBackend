@@ -2,7 +2,6 @@ const User = require('../models/user');
 const TrainingPlan = require('../models/trainingPlan');
 
 
-// New approach
 
 exports.createTrainingPlan = (req, res, next) => {
     const { trainingPlanName, description, userId, image } = req.body;
