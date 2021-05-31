@@ -54,7 +54,7 @@ mongoose
         'mongodb+srv://admin:17071998@cluster0.dvzkc.mongodb.net/trainings?retryWrites=true&w=majority'
     )
     .then(result => {
-      app.listen(8080);
+      app.listen(process.env.PORT || 8080, '0.0.0.0');
     })
     .catch(err => console.log(err));
 
