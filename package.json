@@ -3,9 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "npm run build",
-    "start": "node app.js",
-    "build": "npm run build"
+    "start": "node app.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
