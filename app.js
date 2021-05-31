@@ -47,8 +47,11 @@ app.use((error,req,res,next)=>{
 
 
 mongoose
+    // .connect(
+    //   process.env.MONGO_KEY
+    // )
     .connect(
-      process.env.MONGO_KEY
+        'mongodb+srv://admin:17071998@cluster0.dvzkc.mongodb.net/trainings?retryWrites=true&w=majority'
     )
     .then(result => {
       app.listen(8080);
